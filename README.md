@@ -1,0 +1,1 @@
+Got tired of always having to download azcopy manually bcus the installed version of it is broken per default when starting the container.

@@ -1,0 +1,33 @@
+name: Build and Push azure cli azcopy
+
+on:
+    schedule:
+      - cron: '0 0 1 * *'  # This runs at 00:00 UTC on the first day of every month
+    workflow_dispatch:
+    push:
+      branches:
+        - main
+    pull_request:
+      branches:
+        - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/az-cli-azcopy:latest .
+
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository_owner }}/az-cli-azcopy:latest
